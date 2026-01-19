@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>New Order</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="top-bar">
+            <h1>New Order</h1>
+            <div class="top-actions">
+                <button id="themeToggle" class="btn-icon"><i class="ri-moon-line"></i></button>
+                <button onclick="abrirGestaoCategorias()" class="btn-icon"><i class="ri-settings-4-line"></i></button>
+            </div>
+        </div>
+        
+        <div class="search-box">
+            <i class="ri-search-line"></i>
+            <input type="text" id="searchInput" placeholder="Buscar material...">
+        </div>
+
+        <nav class="categories" id="categoryTabs"></nav>
+    </header>
+
+    <main>
+        <div id="startState" class="empty-state" style="display:none">
+            <i class="ri-arrow-up-line" style="font-size: 24px; display:block; margin-bottom:10px;"></i>
+            Crie categorias na engrenagem para começar.
+        </div>
+
+        <ul id="listaItens" class="list-group"></ul>
+        
+        <div id="emptyState" class="empty-state" style="display:none">
+            Nada por aqui.
+        </div>
+    </main>
+
+    <button class="fab" onclick="abrirModalItem()">
+        <i class="ri-add-line"></i>
+    </button>
+
+    <footer class="actions-footer">
+        <button onclick="exportarBackupCompleto()" class="btn-action btn-save">
+            <i class="ri-save-3-line"></i> BACKUP
+        </button>
+        <input type="file" id="importarFile" hidden onchange="importarBackupCompleto(event)">
+        <button onclick="document.getElementById('importarFile').click()" class="btn-action btn-load">
+            <i class="ri-upload-cloud-2-line"></i> RESTAURAR
+        </button>
+    </footer>
+
+    <div id="modalItem" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Item</h2>
+                <button onclick="fecharModais()" class="btn-close-x"><i class="ri-close-line"></i></button>
+            </div>
+            
+            <input type="hidden" id="editId">
+            
+            <div class="photo-upload-area" onclick="document.getElementById('fotoInput').click()">
+                <img id="previewFoto" src="" style="display:none">
+                <div id="placeholderFoto">
+                    <i class="ri-camera-line"></i>
+                    <span>Adicionar Foto</span>
+                </div>
+            </div>
+            <input type="file" id="fotoInput" hidden accept="image/*" capture="environment">
+
+            <label>Nome do Item</label>
+            <input type="text" id="nomeItem" placeholder="Ex: Dobradiça Curva">
+            
+            <div class="row-inputs">
+                <div style="flex:1">
+                    <label>Qtd Atual</label>
+                    <input type="number" id="qtdItem" placeholder="0">
+                </div>
+                <div style="flex:1">
+                    <label>Mínimo</label>
+                    <input type="number" id="minItem" placeholder="Ex: 5">
+                </div>
+            </div>
+
+            <label>Status</label>
+            <div class="status-selector" id="statusSelector">
+                <button type="button" class="status-btn active" data-val="pendente" style="--color: var(--status-pending)">Pendente</button>
+                <button type="button" class="status-btn" data-val="comprado" style="--color: var(--status-bought)">Comprado</button>
+                <button type="button" class="status-btn" data-val="entregue" style="--color: var(--status-done)">Entregue</button>
+            </div>
+
+            <label>Categoria</label>
+            <select id="catItemSelector"></select>
+
+            <div class="modal-buttons">
+                <button onclick="fecharModais()" class="btn-cancel">Cancelar</button>
+                <button onclick="salvarItem()" class="btn-confirm">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalCats" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Categorias</h2>
+                <button onclick="fecharModais()" class="btn-close-x"><i class="ri-close-line"></i></button>
+            </div>
+            <p class="hint">Gerencie as áreas da sua oficina.</p>
+            <div class="add-cat-row">
+                <input type="text" id="newCatInput" placeholder="Nova categoria...">
+                <button onclick="adicionarCategoria()" class="btn-small-add"><i class="ri-add-line"></i></button>
+            </div>
+            <ul id="listaCategoriasEdit" class="list-group-edit"></ul>
+            <div class="modal-buttons">
+                <button onclick="fecharModais()" class="btn-confirm" style="grid-column: span 2;">Concluir</button>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="compressorCanvas" style="display:none;"></canvas>
+
+    <script src="script.js"></script>
+</body>
+</html>
